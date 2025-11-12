@@ -9,7 +9,7 @@ const initialPrices = {
 const PIX_KEY_CNPJ_FORMATTED = '42.181.669/0001-77';
 const PIX_KEY_CNPJ_RAW = '42181669000177';
 const ADMIN_PASSWORD = 'sindico2025';
-const ADMIN_WHATSAPP_NUMBER = '5541999999999'; // Placeholder for admin's WhatsApp
+const ADMIN_WHATSAPP_NUMBER = '5521964290113'; // Placeholder for admin's WhatsApp
 
 // --- Interfaces ---
 interface Space {
