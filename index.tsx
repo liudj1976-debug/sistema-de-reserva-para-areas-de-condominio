@@ -9,6 +9,7 @@ const initialPrices = {
 const PIX_KEY_CNPJ_FORMATTED = '42.181.669/0001-77';
 const PIX_KEY_CNPJ_RAW = '42181669000177';
 const ADMIN_PASSWORD = 'sindico2025';
+const ADMIN_WHATSAPP_NUMBER = '5541999999999'; // Placeholder for admin's WhatsApp
 
 // --- Interfaces ---
 interface Space {
@@ -184,6 +185,13 @@ const App = () => {
           setConfirmModalState({ open: false, title: '', message: '', confirmText: 'Confirmar', onConfirm: null });
       }
     });
+  };
+  
+  const handleSendReceipt = (reservation: Reservation) => {
+    const formattedDate = new Date(reservation.date + 'T12:00:00Z').toLocaleDateString('pt-BR');
+    const message = `Olá! Segue o comprovante de pagamento para a reserva do espaço "${reservation.spaceName}" no dia ${formattedDate}, para o apartamento ${reservation.apartment}.`;
+    const whatsappUrl = `https://wa.me/${ADMIN_WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`;
+    window.open(whatsappUrl, '_blank');
   };
 
   // --- Components ---
@@ -441,11 +449,23 @@ const App = () => {
                       <p className="font-bold text-lg text-gray-800">{res.spaceName}</p>
                       <p className={`text-sm font-semibold ${res.status === 'Confirmado' ? 'text-green-600' : 'text-amber-600'}`}>{res.status}</p>
                   </div>
-                  <div className="flex gap-2">
-                    {isAdminMode && res.status === 'Pendente' && (
-                      <button onClick={() => confirmReservation(res.id)} className="text-green-500 hover:text-green-700 p-1" title="Confirmar Reserva"><i className="fas fa-check-circle"></i></button>
+                  <div className="flex gap-2 items-center">
+                    {isAdminMode ? (
+                        <>
+                            {res.status === 'Pendente' && (
+                                <button onClick={() => confirmReservation(res.id)} className="text-green-500 hover:text-green-700 p-1" title="Confirmar Reserva"><i className="fas fa-check-circle"></i></button>
+                            )}
+                            <button onClick={() => deleteReservation(res.id)} className="text-red-500 hover:text-red-700 p-1" title="Excluir Reserva"><i className="fas fa-trash"></i></button>
+                        </>
+                    ) : (
+                       <>
+                         {res.status === 'Pendente' && (
+                            <button onClick={() => handleSendReceipt(res)} className="bg-green-500 text-white text-xs font-bold py-1 px-3 rounded-full hover:bg-green-600 transition flex items-center gap-1" title="Enviar Comprovante via WhatsApp">
+                                <i className="fab fa-whatsapp"></i> Enviar Comprovante
+                            </button>
+                         )}
+                       </>
                     )}
-                    <button onClick={() => deleteReservation(res.id)} className="text-red-500 hover:text-red-700 p-1" title="Excluir Reserva"><i className="fas fa-trash"></i></button>
                   </div>
               </div>
               <div className="mt-4 space-y-2 text-gray-600">
